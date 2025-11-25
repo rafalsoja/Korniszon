@@ -1,6 +1,6 @@
 # Korniszon – Minimum Viable Product (MVP)
 
-This project is a web-based, self-hosted Minecraft mod server manager, built on **Docker** container architecture and the **Modrinth API**.
+This project is a web-based, self-hosted Minecraft mod server manager, built on **Docker** containers, with future support for custom modpack creation via Modrinth API.
 
 ---
 
@@ -40,6 +40,6 @@ The application is a **Docker Compose** package, consisting of static service co
 1.  **New Package Creation:**
     * The user defines a new instance by selecting the **MC Version** and **Loader**.
     * An integrated **Modrinth search** feature allows the user to browse and select mods to be included in the package.
-    * The system automatically downloads the **server engine file** and the **selected mod `.jar` files** into the instance directory.
+    * The system automatically downloads the **server engine** and the **selected mod `.jar` files** into the instance directory.
 2.  **Import Existing Packages:**
     * Ability to enter a Modrinth Project ID/Slug or link to **automatically download and configure** a pre-made modpack.
