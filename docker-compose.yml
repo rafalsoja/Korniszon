@@ -11,33 +11,14 @@ services:
       - ./data:/app/data
       - ./server_instances:/app/server_instances
       - /var/run/docker.sock:/var/run/docker.sock 
-      - ./certs:/certs
-    networks:
-      - mc_network
-    expose:
-      - "8000"
+      - ./certs:/app/certs
+    ports:
+      - "8000:8000"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.frontend
     restart: unless-stopped
-    networks:
-      - mc_network
-    expose: 
-      - "3000"
-
-  reverse-proxy:
-    image: nginx:latest
-    volumes:
-      - ./certs:/etc/nginx/certs
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - "443:443"
+    ports: 
       - "80:80"
-    networks:
-      - mc_network
-
-networks:
-  mc_network:
-    driver: bridge

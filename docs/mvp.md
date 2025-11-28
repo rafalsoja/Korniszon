@@ -12,7 +12,6 @@ The application is a **Docker Compose** package, consisting of static service co
 | :--- | :--- | :--- |
 | **Backend API** | The system's brain: business logic, Docker API, Modrinth API, WebSockets. | **Python 3.11+, FastAPI** |
 | **Database** | Persistence for configuration, user data, and package states. | **SQLite** |
-| **Reverse Proxy** | Handles **SSL/HTTPS** for secure login. | **Caddy**  |
 | **Frontend** | Web Interface (admin panel) for user interaction. | **Vue.js** |
 | **MC Instances** | The actual Minecraft server process. | **TemurinJDK** |
 | **Orchestration** | Dynamic start/stop of MC servers. | **Docker API** |
