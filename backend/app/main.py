@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .database import create_db_tables
 from .models import ServerInstance
+from .routers import server
 
 from datetime import datetime
 
@@ -15,6 +16,7 @@ app = FastAPI(
     docs_url="/docs",
     openapi_url="/api/openapi.json",
 )
+app.include_router(server.router)
 
 @app.get("/")
 async def root():
