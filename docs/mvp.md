@@ -23,7 +23,7 @@ The application is a **Docker Compose** package, consisting of static service co
 ### A. Infrastructure and Security
 
 1.  **Easy Deployment:** Launch the entire stack with a single **`docker compose up -d`** command.
-2.  **Secure Login:** The web interface is accessible via **HTTPS** (provided by the Reverse Proxy) to protect administrator credentials.
+2.  **Secure Login:** The web interface is accessible via **HTTPS** to protect administrator credentials.
 3.  **Data Persistence:** All configuration data (SQLite) and server files are mapped to **host volumes** to ensure data safety upon container shutdown.
 
 ### B. Server Instance Management

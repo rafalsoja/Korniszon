@@ -3,6 +3,10 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+
+from .database import create_db_tables
+from .models import ServerInstance
+
 from datetime import datetime
 
 app = FastAPI(
@@ -15,3 +19,7 @@ app = FastAPI(
 @app.get("/")
 async def root():
     return RedirectResponse(url="/docs")
+
+@app.get("/setup/initdb")
+async def init_db():
+    create_db_tables()

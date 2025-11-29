@@ -1,14 +1,19 @@
-FROM python:3.11-slim
+FROM python:3.13-slim
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-RUN pip install uv
-COPY requirements.txt .
-RUN uv pip install -r requirements.txt --system
-COPY app/ /app/app
-EXPOSE 8000
-RUN chmod +x app/start.sh
-ENTRYPOINT [ "/app/app/start.sh" ]
+
+RUN pip install uv --no-cache-dir
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --locked
+
+COPY  app/ /app/app
+RUN chmod +x /app/app/start.sh
+
+ENTRYPOINT ["/app/app/start.sh"]

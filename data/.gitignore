@@ -1,2 +1,3 @@
-server.crt
-backend.db
+certs/*
+
+manager.db
