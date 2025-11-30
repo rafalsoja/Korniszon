@@ -1,11 +1,18 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 
+
 def get_server_instances(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.ServerInstance).offset(skip).limit(limit).all()
 
+
 def get_server_instance(db: Session, server_id: int):
-    return db.query(models.ServerInstance).filter(models.ServerInstance.id == server_id).first()
+    return (
+        db.query(models.ServerInstance)
+        .filter(models.ServerInstance.id == server_id)
+        .first()
+    )
+
 
 def create_server_instance(db: Session, server: schemas.ServerInstanceCreate):
     db_server = models.ServerInstance(**server.dict())
@@ -14,7 +21,10 @@ def create_server_instance(db: Session, server: schemas.ServerInstanceCreate):
     db.refresh(db_server)
     return db_server
 
-def update_server_instance(db: Session, server_id: int, server: schemas.ServerInstanceUpdate):
+
+def update_server_instance(
+    db: Session, server_id: int, server: schemas.ServerInstanceUpdate
+):
     db_server = get_server_instance(db, server_id)
     if not db_server:
         return None
@@ -23,6 +33,7 @@ def update_server_instance(db: Session, server_id: int, server: schemas.ServerIn
     db.commit()
     db.refresh(db_server)
     return db_server
+
 
 def delete_server_instance(db: Session, server_id: int):
     db_server = get_server_instance(db, server_id)

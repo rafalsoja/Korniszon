@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from .database import Base
 from datetime import datetime
 
+
 class ServerInstance(Base):
     __tablename__ = "server_instance"
     id = Column(Integer, primary_key=True, index=True)

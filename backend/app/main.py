@@ -18,9 +18,11 @@ app = FastAPI(
 )
 app.include_router(server.router)
 
+
 @app.get("/")
 async def root():
     return RedirectResponse(url="/docs")
+
 
 @app.get("/setup/initdb")
 async def init_db():
