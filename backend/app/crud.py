@@ -1,5 +1,6 @@
+from .schemas import servers
 from sqlalchemy.orm import Session
-from . import models, schemas
+from . import models
 
 
 def get_server_instances(db: Session, skip: int = 0, limit: int = 100):
@@ -14,7 +15,7 @@ def get_server_instance(db: Session, server_id: int):
     )
 
 
-def create_server_instance(db: Session, server: schemas.ServerInstanceCreate):
+def create_server_instance(db: Session, server: servers.ServerInstanceCreate):
     db_server = models.ServerInstance(**server.dict())
     db.add(db_server)
     db.commit()
@@ -23,7 +24,7 @@ def create_server_instance(db: Session, server: schemas.ServerInstanceCreate):
 
 
 def update_server_instance(
-    db: Session, server_id: int, server: schemas.ServerInstanceUpdate
+    db: Session, server_id: int, server: servers.ServerInstanceUpdate
 ):
     db_server = get_server_instance(db, server_id)
     if not db_server:

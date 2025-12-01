@@ -5,6 +5,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.backend
     restart: unless-stopped
+    pull_policy: build
     environment:
       - DATABASE_URL=sqlite:///app/data/manager.db
     volumes:
@@ -19,5 +20,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.frontend
     restart: unless-stopped
+    pull_policy: build
     ports: 
       - "80:80"
