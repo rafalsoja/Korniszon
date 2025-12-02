@@ -20,3 +20,12 @@ class ServerInstance(Base):
 
     cpu_limit = Column(Integer, nullable=False, default=1)
     memory_limit_mb = Column(Integer, nullable=False, default=2048)
+
+class User(Base):
+    __tablename__ = "user"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    full_name = Column(String, nullable=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    is_active = Column(Integer, default=1)

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Annotated, Optional
 from datetime import datetime
 
 
@@ -20,9 +21,16 @@ class ServerInstanceCreate(ServerInstanceBase):
 
 
 class ServerInstanceUpdate(BaseModel):
-    status: str | None = None
-    cpu_limit: int | None = None
-    memory_limit_mb: int | None = None
+    name: Optional[str] = None
+    port: Optional[int] = None
+    status: Optional[str] = None
+    image_name: Optional[str] = None
+    container_id: Optional[str] = None
+    jre_version: Optional[str] = None
+    engine: Optional[str] = None
+    engine_version: Optional[str] = None
+    cpu_limit: Optional[int] = None
+    memory_limit_mb: Optional[int] = None
 
 
 class ServerInstance(ServerInstanceBase):

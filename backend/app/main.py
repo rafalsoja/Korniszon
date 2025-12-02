@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .database import create_db_tables
 from .models import ServerInstance
-from .routers import servers
+from .routers import servers, auth
 
 from datetime import datetime
 
@@ -17,6 +17,7 @@ app = FastAPI(
 
 
 app.include_router(servers.router)
+app.include_router(auth.router)
 
 
 @app.exception_handler(HTTPException)
