@@ -2,7 +2,14 @@ version: '3'
 
 tasks:
   docker:
+    desc: "Rebuild and restart docker containers"
     cmds:
       - docker compose down
       - docker compose up -d --build
+    silent: false
+  venv:
+    desc: "Activate venv and sync deps"
+    cmds:
+      - powershell -ExecutionPolicy Bypass -File backend/.venv/Scripts/Activate.ps1
+      - cd backend && uv sync
     silent: false

@@ -1,13 +1,15 @@
-from .schemas import servers
+import asyncio
 from sqlalchemy.orm import Session
 from . import models
+from .schemas import servers
+from .utils.server_instances import deploy_server
 
 
-def get_server_instances(db: Session, skip: int = 0, limit: int = 100):
+async def get_server_instances(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.ServerInstance).offset(skip).limit(limit).all()
 
 
-def get_server_instance(db: Session, server_id: int):
+async def get_server_instance(db: Session, server_id: int):
     return (
         db.query(models.ServerInstance)
         .filter(models.ServerInstance.id == server_id)
@@ -15,15 +17,17 @@ def get_server_instance(db: Session, server_id: int):
     )
 
 
-def create_server_instance(db: Session, server: servers.ServerInstanceCreate):
+async def create_server_instance(db: Session, server: servers.ServerInstanceCreate):
     db_server = models.ServerInstance(**server.dict())
     db.add(db_server)
     db.commit()
     db.refresh(db_server)
+
+    asyncio.create_task(deploy_server(db_server))
     return db_server
 
 
-def update_server_instance(
+async def update_server_instance(
     db: Session, server_id: int, server: servers.ServerInstanceUpdate
 ):
     db_server = get_server_instance(db, server_id)
@@ -36,7 +40,7 @@ def update_server_instance(
     return db_server
 
 
-def delete_server_instance(db: Session, server_id: int):
+async def delete_server_instance(db: Session, server_id: int):
     db_server = get_server_instance(db, server_id)
     if not db_server:
         return None

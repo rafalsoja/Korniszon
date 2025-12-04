@@ -13,6 +13,7 @@ class ServerInstance(Base):
 
     image_name = Column(String, nullable=False, default="mcserver")
     container_id = Column(String, unique=True, index=True, nullable=True)
+    mc_version = Column(String, nullable=False)
     jre_version = Column(String, nullable=False)
 
     engine = Column(String, nullable=False)

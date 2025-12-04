@@ -19,7 +19,6 @@ app = FastAPI(
 app.include_router(servers.router)
 app.include_router(auth.router)
 
-
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
