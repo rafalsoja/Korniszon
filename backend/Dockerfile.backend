@@ -13,7 +13,9 @@ RUN pip install uv --no-cache-dir
 COPY pyproject.toml uv.lock ./
 RUN uv sync --locked
 
-COPY  app/ /app/app
-RUN chmod +x /app/app/start.sh
+COPY src/ /app/src
 
-ENTRYPOINT ["/app/app/start.sh"]
+COPY src/start.sh ./src/start.sh
+RUN chmod +x ./src/start.sh
+
+ENTRYPOINT ["/app/src/start.sh"]

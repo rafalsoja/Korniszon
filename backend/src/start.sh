@@ -9,5 +9,5 @@ if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
     -subj "/CN=localhost"
 fi
 
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 \
+uv run uvicorn src.main:app --host 0.0.0.0 --port 8000 \
     --ssl-keyfile=$KEY --ssl-certfile=$CERT
