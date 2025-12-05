@@ -45,10 +45,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-from fastapi.security import OAuth2PasswordRequestForm
-
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    print(form_data.username, form_data.password)
     user = db.query(User).filter(
         or_(User.email == form_data.username, User.username == form_data.username)
     ).first()

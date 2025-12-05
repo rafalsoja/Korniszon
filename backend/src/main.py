@@ -15,7 +15,6 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
-
 app.include_router(servers.router)
 app.include_router(auth.router)
 
