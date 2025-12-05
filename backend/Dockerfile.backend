@@ -1,4 +1,6 @@
 FROM python:3.13-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -7,8 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-RUN pip install uv --no-cache-dir
 
 COPY pyproject.toml uv.lock ./
 RUN uv sync --locked
@@ -19,3 +19,5 @@ COPY src/start.sh ./src/start.sh
 RUN chmod +x ./src/start.sh
 
 ENTRYPOINT ["/app/src/start.sh"]
+# Debug mode
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
