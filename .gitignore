@@ -1,5 +1,8 @@
 data/certs/*
+data/logs/*
 data/manager.db
+
 server_instances/*
+
 backend/.venv/
 .venv/

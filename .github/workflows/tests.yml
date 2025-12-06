@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build backend image
+        working-directory: ./backend
+        run: docker build -f Dockerfile.backend -t korniszon-backend:test .
+      
+      - name: Run tests in container
+        run: docker run --rm korniszon-backend:test python -m pytest tests/ -v

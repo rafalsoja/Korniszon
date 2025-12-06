@@ -4,16 +4,19 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
-
+    
+ENV PYTHONPATH=/app
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 RUN uv sync --locked
 
 COPY src/ /app/src
+COPY tests/ /app/tests
 
 COPY src/start.sh ./src/start.sh
 RUN chmod +x ./src/start.sh
