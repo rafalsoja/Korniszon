@@ -21,6 +21,11 @@ if [ $TEST_EXIT_CODE -ne 0 ]; then
   exit $TEST_EXIT_CODE
 fi
 
+if [ "$RUN_TESTS_ONLY" = "1" ]; then
+  echo "Tests passed! Exiting..."
+  exit 0
+fi
+
 echo "Tests passed! Starting app..."
-uv run uvicorn src.main:app --host 0.0.0.0 --port 8000 \
+exec uv run uvicorn src.main:app --host 0.0.0.0 --port 8000 \
     --ssl-keyfile=$KEY --ssl-certfile=$CERT

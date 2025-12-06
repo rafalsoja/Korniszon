@@ -15,7 +15,7 @@ jobs:
       
       - name: Build backend image
         working-directory: ./backend
-        run: docker build -f Dockerfile.backend -t korniszon-backend:test .
+        run: docker build -f Dockerfile.backend -t korniszon-backend:latest .
       
-      - name: Run tests in container
-        run: docker run --rm korniszon-backend:test python -m pytest tests/ -v
+      - name: Run tests
+        run: docker run --rm -e RUN_TESTS_ONLY=1 korniszon-backend:latest

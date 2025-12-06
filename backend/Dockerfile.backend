@@ -21,6 +21,6 @@ COPY tests/ /app/tests
 COPY src/start.sh ./src/start.sh
 RUN chmod +x ./src/start.sh
 
-ENTRYPOINT ["/app/src/start.sh"]
+CMD ["/app/src/start.sh"]
 # Debug mode
 # ENTRYPOINT ["tail", "-f", "/dev/null"]
