@@ -13,7 +13,7 @@ if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
 fi
 
 echo "Running tests..."
-uv run pytest tests/ -v --tb=short
+uv run pytest --cov=src --cov-report=term tests/ -v --tb=short
 TEST_EXIT_CODE=$?
 
 if [ $TEST_EXIT_CODE -ne 0 ]; then
