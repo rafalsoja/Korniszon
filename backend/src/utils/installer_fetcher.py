@@ -88,6 +88,16 @@ ENGINES = {
 
 
 async def get_installer_url(engine: str, mc_version: str) -> str | None:
+    """
+    Get the installer URL for a given Minecraft version and engine.
+
+    Args:
+        engine (str): The engine to use (e.g. "neoforge", "fabric", "forge")
+        mc_version (str): The Minecraft version to use (e.g. "1.19.3")
+
+    Returns:
+        str | None: The URL of the installer, or None if not found.
+    """
     if not re.match(r"^\d+\.\d+(\.\d+)?$", mc_version):
         raise ValueError(f"Invalid Minecraft version format: {mc_version}")
 

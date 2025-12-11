@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "argon2-cffi>=25.1.0",
     "beautifulsoup4>=4.14.3",
+    "docker>=7.1.0",
     "fastapi>=0.122.0",
     "httpx>=0.28.1",
     "passlib>=1.7.4",

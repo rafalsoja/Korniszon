@@ -3,10 +3,11 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from .logger import get_logger
-from .database import create_db_tables
-from .models import ServerInstance
-from .routers import servers, auth
+from src.logger import get_logger
+from src.database import create_db_tables
+from src.models import ServerInstance
+from src.routers.servers import servers_router
+from src.routers.auth import auth_router
 
 from datetime import datetime
 
@@ -23,8 +24,8 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-app.include_router(servers.router)
-app.include_router(auth.router)
+app.include_router(servers_router)
+app.include_router(auth_router)
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):

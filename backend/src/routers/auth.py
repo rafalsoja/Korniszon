@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -48,7 +48,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         logger.warning(f"JWT decode error: {type(e).__name__}")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-@router.post("/register", response_model=UserRead)
+@auth_router.post("/register", response_model=UserRead)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     """Register a new user."""
     logger.info(f"Register attempt for email: {user.email}")
@@ -92,7 +92,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         logger.error(f"Registration error for {user.email}: {type(e).__name__}: {str(e)}")
         raise HTTPException(status_code=500, detail="Registration failed")
 
-@router.post("/login", response_model=Token)
+@auth_router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Authenticate user and return JWT token."""
     username_or_email = form_data.username
