@@ -7,11 +7,13 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 
-from ..config import SECRET_KEY, HASHING_ALGORITHM
-from ..schemas.users import UserCreate, UserRead, TokenData, Token
-from ..models import User
-from ..database import get_db
-from ..logger import get_logger
+from src.schemas.users import UserCreate, UserRead, TokenData, Token
+from src.models import User
+from src.database import get_db
+from src.logger import get_logger
+
+SECRET_KEY = "somethingsecret"
+HASHING_ALGORITHM = "HS256"
 
 logger = get_logger(__name__)
 
