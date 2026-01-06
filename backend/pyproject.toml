@@ -26,3 +26,8 @@ dependencies = [
 members = [
     "init",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.10",
+]

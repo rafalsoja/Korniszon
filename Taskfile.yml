@@ -13,3 +13,13 @@ tasks:
       - powershell -ExecutionPolicy Bypass -File backend/.venv/Scripts/Activate.ps1
       - cd backend && uv sync
     silent: false
+  check-format:
+    desc: "Check code format"
+    cmds:
+      - cd backend && uv tool run ruff format --check && uv tool run ruff check
+    silent: false
+  format:
+    desc: "Format code"
+    cmds:
+      - cd backend && uv tool run ruff format && uv tool run ruff check --fix
+    silent: false
