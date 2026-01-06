@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, constr
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Literal
 from datetime import datetime
 
@@ -8,8 +8,15 @@ class ServerInstanceBase(BaseModel):
     port: int = Field(ge=25565, le=65535)
     image_name: str
     mc_version: Literal[
-        "1.12.2", "1.16.5", "1.17", "1.18.2",
-        "1.19.4", "1.20.1", "1.21", "1.21.1", "1.21.10"
+        "1.12.2",
+        "1.16.5",
+        "1.17",
+        "1.18.2",
+        "1.19.4",
+        "1.20.1",
+        "1.21",
+        "1.21.1",
+        "1.21.10",
     ]
     jre_version: Literal["8", "11", "17", "21"]
     engine: Literal["fabric", "forge", "neoforge", "vanilla"]
@@ -27,8 +34,17 @@ class ServerInstanceUpdate(BaseModel):
     port: Optional[int] = None
     image_name: Optional[str] = None
     mc_version: Optional[
-        Literal["1.12.2", "1.16.5", "1.17", "1.18.2",
-                "1.19.4", "1.20.1", "1.21", "1.21.1", "1.21.10"]
+        Literal[
+            "1.12.2",
+            "1.16.5",
+            "1.17",
+            "1.18.2",
+            "1.19.4",
+            "1.20.1",
+            "1.21",
+            "1.21.1",
+            "1.21.10",
+        ]
     ] = None
     jre_version: Optional[Literal["8", "11", "17", "21"]] = None
     engine: Optional[Literal["fabric", "forge", "neoforge", "vanilla"]] = None

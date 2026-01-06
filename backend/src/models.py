@@ -22,6 +22,7 @@ class ServerInstance(Base):
     cpu_limit = Column(Integer, nullable=False, default=1)
     memory_limit_mb = Column(Integer, nullable=False, default=2048)
 
+
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, index=True)

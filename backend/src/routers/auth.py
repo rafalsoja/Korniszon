@@ -28,33 +28,41 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 # JWT exparation time
 TOKEN_EXPIRE_MINUTES = 30
 
+
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """Decode JWT and return current user email."""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[HASHING_ALGORITHM])
         email: str = payload.get("sub")
         exp: int = payload.get("exp")
-        
+
         if email is None:
             logger.warning("Token missing 'sub' claim")
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-        
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            )
+
         # Check expiration
         if exp and datetime.fromtimestamp(exp) < datetime.utcnow():
             logger.info(f"Expired token for user {email}")
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
-        
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired"
+            )
+
         return TokenData(sub=email)
-    
+
     except JWTError as e:
         logger.warning(f"JWT decode error: {type(e).__name__}")
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+        )
+
 
 @auth_router.post("/register", response_model=UserRead)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     """Register a new user."""
     logger.info(f"Register attempt for email: {user.email}")
-    
+
     # Validate email
     if not EMAIL_REGEX.match(user.email):
         logger.warning(f"Invalid email format: {user.email}")
@@ -81,32 +89,41 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
             email=user.email,
             full_name=user.full_name,
             hashed_password=hashed_pw,
-            is_active=True
+            is_active=True,
         )
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
         logger.info(f"User registered: {user.email}")
         return new_user
-    
+
     except Exception as e:
         db.rollback()
-        logger.error(f"Registration error for {user.email}: {type(e).__name__}: {str(e)}")
+        logger.error(
+            f"Registration error for {user.email}: {type(e).__name__}: {str(e)}"
+        )
         raise HTTPException(status_code=500, detail="Registration failed")
 
+
 @auth_router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     """Authenticate user and return JWT token."""
     username_or_email = form_data.username
     logger.info(f"Login attempt: {username_or_email}")
-    
+
     try:
         if not form_data.username or not form_data.password:
             raise HTTPException(status_code=422, detail="Credentials required")
 
-        user = db.query(User).filter(
-            or_(User.email == username_or_email, User.username == username_or_email)
-        ).first()
+        user = (
+            db.query(User)
+            .filter(
+                or_(User.email == username_or_email, User.username == username_or_email)
+            )
+            .first()
+        )
 
         if not user:
             logger.warning(f"Login failed: user not found ({username_or_email})")
@@ -122,12 +139,9 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
         # Create JWT
         expires = datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRE_MINUTES)
-        token_data = {
-            "sub": user.email,
-            "exp": expires
-        }
+        token_data = {"sub": user.email, "exp": expires}
         token = jwt.encode(token_data, SECRET_KEY, algorithm=HASHING_ALGORITHM)
-        
+
         logger.info(f"Login successful: {user.email}")
         return {"access_token": token, "token_type": "bearer"}
 

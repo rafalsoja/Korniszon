@@ -1,4 +1,3 @@
-import asyncio
 import httpx
 import re
 import urllib.parse
@@ -60,9 +59,7 @@ async def get_fabric_url(client: httpx.AsyncClient, mc_version: str) -> str | No
 
 
 async def get_forge_url(client: httpx.AsyncClient, mc_version: str) -> str | None:
-    page_url = (
-        f"https://files.minecraftforge.net/net/minecraftforge/forge/index_{mc_version}.html"
-    )
+    page_url = f"https://files.minecraftforge.net/net/minecraftforge/forge/index_{mc_version}.html"
     resp = await client.get(page_url)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
