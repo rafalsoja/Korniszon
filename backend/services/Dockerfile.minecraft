@@ -1,0 +1,24 @@
+ARG JAVA_VERSION=21
+FROM eclipse-temurin:${JAVA_VERSION}-jdk
+
+# Install additional runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create server directory
+RUN mkdir -p /server
+WORKDIR /server
+
+# Copy startup script
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+
+# Verify Java installation
+RUN java -version
+
+# Expose Minecraft server port (documentation only)
+EXPOSE 25565
+
+# Default command
+ENTRYPOINT ["/startup.sh"]

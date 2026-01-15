@@ -1,8 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Certs
+backend/certs/*.crt
+backend/certs/*.key
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Data
 data/certs/*
 data/logs/*
-data/manager.db
+*.db
 
-server_instances/*
+# Temporary
+server_instances/
 
-backend/.venv/
-.venv/
+# Env files
+backend/backend.env

@@ -1,2 +1,0 @@
-SECRET_KEY = "supersecret"
-HASHING_ALGORITHM = "HS256"

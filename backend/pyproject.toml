@@ -1,28 +1,23 @@
 [project]
-name = "korniszon"
-version = "0.1.0"
-description = "Add your description here"
+name = "backend"
+version = "0.0.1"
+description = "Korniszon Backend"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "argon2-cffi>=25.1.0",
-    "beautifulsoup4>=4.14.3",
-    "docker>=7.1.0",
-    "fastapi>=0.122.0",
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "pydantic>=2.5.0",
+    "sqlalchemy>=2.0.0",
+    "docker>=7.0.0",
+    "python-dotenv>=1.2.1",
+    "colorlog>=6.10.1",
     "httpx>=0.28.1",
-    "passlib>=1.7.4",
-    "pydantic[email]>=2.12.5",
-    "pytest>=9.0.1",
-    "pytest-asyncio>=0.24.0",
-    "pytest-cov>=7.0.0",
-    "python-jose>=3.5.0",
-    "python-multipart>=0.0.20",
-    "pyyaml>=6.0.3",
-    "sqlalchemy>=2.0.44",
-    "uvicorn>=0.38.0",
+    "beautifulsoup4>=4.14.3",
+    "dotenv>=0.9.9",
 ]
 
-[tool.uv.workspace]
-members = [
-    "init",
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
 ]

@@ -1,12 +1,12 @@
 # Korniszon – (MVP)
 
-This project is a web-based, self-hosted Minecraft mod server manager, built on **Docker** containers, with future support for custom modpack creation via Modrinth API.
+This project is a web-based, self-hosted Minecraft mod server manager, with local backend and frontend components, and Minecraft servers in Docker containers, with future support for custom modpack creation via Modrinth API.
 
 ---
 
 ## I. Technical Architecture
 
-The application is a **Docker Compose** package, consisting of static service containers and dynamic instance containers. 
+The application features a local backend and frontend, alongside dynamic Docker containers for Minecraft server instances. 
 
 | Component | Role / Goal | Technology / Tool |
 | :--- | :--- | :--- |
@@ -22,7 +22,7 @@ The application is a **Docker Compose** package, consisting of static service co
 
 ### A. Infrastructure and Security
 
-1.  **Easy Deployment:** Launch the entire stack with a single **`docker compose up -d`** command.
+1.  **Easy Deployment:** Deploy the backend and frontend locally, while using Docker for Minecraft server management.
 2.  **Secure Login:** The web interface is accessible via **HTTPS** to protect administrator credentials.
 3.  **Data Persistence:** All configuration data (SQLite) and server files are mapped to **host volumes** to ensure data safety upon container shutdown.
 

@@ -2,20 +2,31 @@ name: Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Build backend image
-        working-directory: ./backend
-        run: docker build -f Dockerfile.backend -t korniszon-backend:latest .
-      
-      - name: Run tests
-        run: docker run --rm -e RUN_TESTS_ONLY=1 korniszon-backend:latest
+    - uses: actions/checkout@v3
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        enable-cache: true
+    
+    - name: Set up Python
+      run: uv python install 3.13
+    
+    - name: Install dependencies
+      working-directory: ./backend
+      run: |
+        uv sync
+        uv pip install pytest
+    
+    - name: Run tests
+      working-directory: ./backend
+      run: uv run pytest tests/

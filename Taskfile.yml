@@ -1,15 +1,15 @@
 version: '3'
 
 tasks:
-  docker:
-    desc: "Rebuild and restart docker containers"
+  run:
+    desc: "Run backend with SSL"
+    dir: backend
     cmds:
-      - docker compose down
-      - docker compose up -d --build
+      - uv run uvicorn main:app --host 0.0.0.0 --port 8000 --ssl-keyfile=./certs/server.key --ssl-certfile=./certs/server.crt --reload
     silent: false
-  venv:
-    desc: "Activate venv and sync deps"
+  wipe:
+    desc: "Wipe the database"
+    dir: backend
     cmds:
-      - powershell -ExecutionPolicy Bypass -File backend/.venv/Scripts/Activate.ps1
-      - cd backend && uv sync
+      - powershell -c "Get-Process python -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; Remove-Item database.db -ErrorAction SilentlyContinue"
     silent: false
