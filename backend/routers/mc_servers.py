@@ -105,6 +105,7 @@ async def stop_server_endpoint(
         raise HTTPException(status_code=400, detail="Server not running")
 
     result = await docker_service.stop_server(server.container_id)
+    
 
     if result["status"] == "error":
         raise HTTPException(status_code=500, detail=result["error"])
@@ -126,10 +127,11 @@ async def delete_server_endpoint(
     # Remove Docker container if exists
     if server.container_id:
         result = await docker_service.stop_and_remove_container(server.container_id)
-        if result["status"] == "error" and "No such container" not in result["error"]:
-            raise HTTPException(status_code=500, detail=result["error"])
         if result["status"] == "error":
-            logger.warning(f"Container already removed: {server.container_id}")
+            if "No such container" in result["error"]:
+                logger.warning(f"Container already removed: {server.container_id}")
+            else:
+                raise HTTPException(status_code=500, detail=result["error"])
 
     # Remove from database
     delete_server(db, server)
