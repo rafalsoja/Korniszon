@@ -1,15 +1,26 @@
 version: '3'
 
 tasks:
+  install:
+    desc: "Install required dependencies"
+    ignore_error: true
+    cmds:
+      - winget install Git.Git
+      - winget install Docker.DockerDesktop
+      - winget install -e --id=astral-sh.uv
+      - winget install ShiningLight.OpenSSL.Light
+      - uv python install 3.13
+    silent: false
   run:
     desc: "Run backend with SSL"
     dir: backend
     cmds:
       - uv run uvicorn main:app --host 0.0.0.0 --port 8000 --ssl-keyfile=./certs/server.key --ssl-certfile=./certs/server.crt --reload
     silent: false
-  wipe:
-    desc: "Wipe the database"
+  gen-certs:
+    desc: "Generate self-signed SSL certificates (requires OpenSSL)"
     dir: backend
     cmds:
-      - powershell -c "Get-Process python -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; Remove-Item database.db -ErrorAction SilentlyContinue"
+      - powershell -Command "if (!(Test-Path -Path './certs')) { New-Item -ItemType Directory -Path './certs' }"
+      - powershell -Command "& 'C:\Program Files\OpenSSL-Win64\bin\openssl.exe' req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/server.key -out ./certs/server.crt -subj '/CN=localhost'"
     silent: false
