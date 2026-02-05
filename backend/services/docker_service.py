@@ -134,6 +134,25 @@ class DockerService:
             logger.error(f"Failed to stop and remove container: {str(e)}")
             return {"status": "error", "error": str(e)}
 
+    async def restart_server(self, container_id: str):
+        """Restart a running container"""
+        try:
+            docker_client = self._get_client()
+            container = docker_client.containers.get(container_id)
+
+            container.restart()
+            logger.info(f"Restarted container {container_id}")
+
+            return {"status": "restarted", "container_id": container_id}
+
+        except docker.errors.NotFound:
+            logger.error(f"Container not found: {container_id}")
+            return {"status": "error", "error": "Container not found"}
+
+        except Exception as e:
+            logger.error(f"Failed to restart server: {str(e)}")
+            return {"status": "error", "error": str(e)}
+
 
 # Helper function for dependency injection
 def get_docker_service() -> DockerService:

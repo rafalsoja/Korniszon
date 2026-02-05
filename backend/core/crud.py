@@ -3,7 +3,7 @@ import logging
 from sqlalchemy.orm import Session
 
 from .models import Server
-from .schemas import ServerCreate
+from .schemas import ServerCreate, ServerUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +59,19 @@ def update_server_status(
         server.container_id = container_id
     db.commit()
     db.refresh(server)
+    return server
+
+
+def update_server(db: Session, server: Server, data: ServerUpdate | dict):
+    if not isinstance(data, dict):
+        data = data.model_dump(exclude_unset=True)
+
+    for key, value in data.items():
+        setattr(server, key, value)
+
+    db.commit()
+    db.refresh(server)
+    logger.info(f"Updated server: {server.name}")
     return server
 
 

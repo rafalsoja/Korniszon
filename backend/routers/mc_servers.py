@@ -8,10 +8,11 @@ from core.crud import (
     get_server_by_id,
     get_server_by_name,
     get_server_by_port,
+    update_server,
     update_server_status,
 )
 from core.database import get_db
-from core.schemas import ServerCreate, ServerResponse
+from core.schemas import ServerCreate, ServerResponse, ServerUpdate
 from fastapi import APIRouter, Depends, HTTPException
 from services.docker_service import DockerService, get_docker_service
 from sqlalchemy.orm import Session
@@ -105,7 +106,6 @@ async def stop_server_endpoint(
         raise HTTPException(status_code=400, detail="Server not running")
 
     result = await docker_service.stop_server(server.container_id)
-    
 
     if result["status"] == "error":
         raise HTTPException(status_code=500, detail=result["error"])
@@ -137,3 +137,27 @@ async def delete_server_endpoint(
     delete_server(db, server)
     logger.info(f"Deleted server from DB: {server.name}")
     return {"status": "deleted", "server_id": server_id}
+
+
+@router.patch("/{server_id}", response_model=ServerResponse)
+async def update_server_endpoint(
+    server_id: int,
+    server_update: ServerUpdate,
+    db: Session = Depends(get_db),
+    restart: bool = False,
+):
+    """Update server details"""
+
+    server = ensure_server_exists(server_id, db)
+
+    update_server(db, server, server_update)
+    logger.info(f"Updated server: {server.name}")
+
+    if restart and server.status == "running":
+        logger.info(f"Restarting server after update: {server.name}")
+        docker_service = get_docker_service()
+        result = await docker_service.restart_server(server.container_id)
+        logger.info(f"Server restarted: {server.name}")
+        if result["status"] == "error":
+            raise HTTPException(status_code=500, detail=result["error"])
+    return server
