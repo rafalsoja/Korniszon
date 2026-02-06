@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 VERSION_PATTERN = r"^1\.[0-2]?[0-9](\.[0-1]?[0-9])?$"
 
@@ -22,7 +22,9 @@ class LoaderType(str, Enum):
 
 class ServerCreate(BaseModel):
     name: str
-    mc_version: str = Field(pattern=VERSION_PATTERN, example="1.12.2")
+    mc_version: str = Field(
+        pattern=VERSION_PATTERN, json_schema_extra={"example": "1.12.2"}
+    )
     loader: LoaderType
     port: int = Field(default=25565, ge=1024, le=65535)
     status: ServerStatus = ServerStatus.STOPPED
@@ -67,5 +69,4 @@ class ServerResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
