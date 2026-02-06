@@ -12,5 +12,4 @@ includes:
     optional: true
   test:
     taskfile: ./tasks/test.yml
-    
     optional: true
