@@ -1,0 +1,9 @@
+version: '3'
+
+tasks:
+  test:
+    desc: "Run backend tests"
+    dir: backend
+    cmds:
+      - uv pip install pytest pytest-cov
+      - uv run pytest --cov=. --cov-report=term-missing tests/

@@ -1,0 +1,65 @@
+version: '3'
+
+tasks:
+  install:
+    desc: "Install required dependencies"
+    deps:
+      - install-windows
+      - install-linux
+
+  install-windows:
+    desc: "Install dependencies on Windows"
+    platforms: [windows]
+    cmds:
+      - winget install Git.Git
+      - winget install Docker.DockerDesktop
+      - winget install -e --id=astral-sh.uv
+      - winget install ShiningLight.OpenSSL.Light
+      - uv python install 3.13
+
+  install-linux:
+    desc: "Install dependencies on Linux"
+    platforms: [linux]
+    cmds:
+      - task: detect-pkg-manager
+      - task: install-linux-deps
+
+  detect-pkg-manager:
+    internal: true
+    cmds:
+      - |
+        if command -v apt >/dev/null 2>&1; then
+          echo "PKG_MANAGER=apt" > .pkg
+        elif command -v dnf >/dev/null 2>&1; then
+          echo "PKG_MANAGER=dnf" > .pkg
+        elif command -v pacman >/dev/null 2>&1; then
+          echo "PKG_MANAGER=pacman" > .pkg
+        elif command -v brew >/dev/null 2>&1; then
+          echo "PKG_MANAGER=brew" > .pkg
+        else
+          echo "Unsupported Linux package manager"
+          exit 1
+        fi
+
+  install-linux-deps:
+    internal: true
+    cmds:
+      - |
+        PKG=$(cat .pkg | cut -d= -f2)
+
+        if [ "$PKG" = "apt" ]; then
+          sudo apt update
+          sudo apt install -y git docker.io openssl curl
+        elif [ "$PKG" = "dnf" ]; then
+          sudo dnf install -y git docker openssl curl
+        elif [ "$PKG" = "pacman" ]; then
+          sudo pacman -Sy --noconfirm git docker openssl curl
+        elif [ "$PKG" = "brew" ]; then
+          brew install git docker openssl curl
+        fi
+
+        # Install uv
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+
+        # Install Python
+        uv python install 3.13

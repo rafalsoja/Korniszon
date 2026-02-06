@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  gen:
+    desc: "Generate self-signed SSL certificates"
+    deps:
+      - gen-windows
+      - gen-linux
+
+  gen-windows:
+    desc: "Generate SSL certs on Windows"
+    platforms: [windows]
+    dir: backend
+    cmds:
+      - powershell -Command "if (!(Test-Path -Path './certs')) { New-Item -ItemType Directory -Path './certs' }"
+      - powershell -Command "& 'C:\Program Files\OpenSSL-Win64\bin\openssl.exe' req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/server.key -out ./certs/server.crt -subj '/CN=localhost'"
+
+  gen-linux:
+    desc: "Generate SSL certs on Linux"
+    platforms: [linux]
+    dir: backend
+    cmds:
+      - mkdir -p ./certs
+      - openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/server.key -out ./certs/server.crt -subj "/CN=localhost"
