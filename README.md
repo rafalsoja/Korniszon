@@ -1,4 +1,7 @@
-## Korniszon
+# Korniszon
+
+![Tests](https://github.com/rafalsoja/Korniszon/actions/workflows/tests.yml/badge.svg)
+
 
 A simple Docker-based server manager for Minecraft.
 
@@ -35,7 +38,7 @@ A simple Docker-based server manager for Minecraft.
 	task gen-certs
 	```
 
-4. Run the backend:
+4. Run the src:
 
 	```powershell
 	task run

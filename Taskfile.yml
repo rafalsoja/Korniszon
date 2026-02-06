@@ -11,12 +11,14 @@ tasks:
       - winget install ShiningLight.OpenSSL.Light
       - uv python install 3.13
     silent: false
+
   run:
     desc: "Run backend with SSL"
     dir: backend
     cmds:
-      - uv run uvicorn main:app --host 0.0.0.0 --port 8000 --ssl-keyfile=./certs/server.key --ssl-certfile=./certs/server.crt --reload
+      - uv run uvicorn src.main:app --host 0.0.0.0 --port 8000 --ssl-keyfile=./certs/server.key --ssl-certfile=./certs/server.crt --reload
     silent: false
+
   gen-certs:
     desc: "Generate self-signed SSL certificates (requires OpenSSL)"
     dir: backend
@@ -24,3 +26,10 @@ tasks:
       - powershell -Command "if (!(Test-Path -Path './certs')) { New-Item -ItemType Directory -Path './certs' }"
       - powershell -Command "& 'C:\Program Files\OpenSSL-Win64\bin\openssl.exe' req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/server.key -out ./certs/server.crt -subj '/CN=localhost'"
     silent: false
+
+  test:
+    desc: "Run backend tests"
+    dir: backend
+    cmds:
+      - uv pip install pytest pytest-cov
+      - uv run pytest --cov=. --cov-report=term-missing tests/

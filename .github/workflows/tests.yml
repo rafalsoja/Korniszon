@@ -25,8 +25,8 @@ jobs:
       working-directory: ./backend
       run: |
         uv sync
-        uv pip install pytest
+        uv pip install pytest pytest-cov
     
     - name: Run tests
       working-directory: ./backend
-      run: uv run pytest tests/
+      run: uv run pytest --cov=. --cov-report=term-missing tests/

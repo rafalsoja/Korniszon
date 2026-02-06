@@ -2,8 +2,8 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from .models import Server
-from .schemas import ServerCreate, ServerUpdate
+from src.core.models import Server
+from src.core.schemas import ServerCreate, ServerUpdate
 
 logger = logging.getLogger(__name__)
 

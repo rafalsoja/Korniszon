@@ -1,10 +1,11 @@
 import logging
 
 import uvicorn
-from core.database import init_db
-from core.logger import setup_logging
 from fastapi import FastAPI
-from routers import v1_router
+
+from src.core.database import init_db
+from src.core.logger import setup_logging
+from src.routers import v1_router
 
 setup_logging()
 logger = logging.getLogger(__name__)

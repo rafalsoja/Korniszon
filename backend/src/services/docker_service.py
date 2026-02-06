@@ -2,8 +2,9 @@ import logging
 from pathlib import Path
 
 import docker
-from utils.installer_fetcher import get_installer_url
-from utils.java_versions import get_java_version
+
+from src.utils.installer_fetcher import get_installer_url
+from src.utils.java_versions import get_java_version
 
 logger = logging.getLogger(__name__)
 

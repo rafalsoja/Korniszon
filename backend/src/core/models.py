@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, Column, DateTime, Enum, Integer, String, Text
 
-from .database import Base
+from src.core.database import Base
 
 
 class LoaderType(str, enum.Enum):

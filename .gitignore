@@ -9,13 +9,17 @@ dist/
 build/
 
 # Certs
-backend/certs/*.crt
-backend/certs/*.key
+*.crt
+*.key
+
+# Coverage
+.coverage
 
 # Virtual environments
 .venv/
 venv/
 env/
+.pytest_cache/
 
 # IDEs
 .vscode/
@@ -29,12 +33,10 @@ env/
 .env.local
 
 # Data
-data/certs/*
-data/logs/*
 *.db
 
 # Temporary
 server_instances/
 
 # Env files
-backend/backend.env
+src/src.env

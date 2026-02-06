@@ -1,7 +1,10 @@
 import logging
 from typing import List
 
-from core.crud import (
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from src.core.crud import (
     create_server,
     delete_server,
     get_all_servers,
@@ -11,11 +14,9 @@ from core.crud import (
     update_server,
     update_server_status,
 )
-from core.database import get_db
-from core.schemas import ServerCreate, ServerResponse, ServerUpdate
-from fastapi import APIRouter, Depends, HTTPException
-from services.docker_service import DockerService, get_docker_service
-from sqlalchemy.orm import Session
+from src.core.database import get_db
+from src.core.schemas import ServerCreate, ServerResponse, ServerUpdate
+from src.services.docker_service import DockerService, get_docker_service
 
 logger = logging.getLogger(__name__)
 
