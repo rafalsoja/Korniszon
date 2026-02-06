@@ -1,8 +1,8 @@
-version: '3'
-
+---
+version: "3"
 tasks:
   test:
-    desc: "Run backend tests"
+    desc: Run backend tests
     dir: backend
     cmds:
       - uv pip install pytest pytest-cov

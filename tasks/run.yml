@@ -1,9 +1,0 @@
-version: '3'
-
-tasks:
-  run:
-    desc: "Run backend with SSL"
-    dir: backend
-    cmds:
-      - uv run uvicorn src.main:app --host 0.0.0.0 --port 8000 --ssl-keyfile=./certs/server.key --ssl-certfile=./certs/server.crt --reload
-    silent: false

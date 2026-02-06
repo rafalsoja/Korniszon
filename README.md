@@ -26,13 +26,13 @@ A simple Docker-based server manager for Minecraft.
 	- Installs applications from [requirements](#requirements)
 
 	```powershell
-	task install
+	task setup:install
 	```
 
 3. Generate SSL certificates:
 
 	```powershell
-	task gen-certs
+	task certs:gen
 	```
 
 4. Run the src:
