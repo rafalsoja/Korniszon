@@ -1,6 +1,6 @@
 import re
 import urllib.parse
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ElementTree
 
 import httpx
 from bs4 import BeautifulSoup
@@ -15,17 +15,22 @@ def normalize_mc_version(mc_version: str) -> tuple[int, int, int]:
     return tuple(map(int, parts))
 
 
-async def get_neoforge_url(client: httpx.AsyncClient, mc_version: str) -> str | None:
-    major, minor, patch = normalize_mc_version(mc_version)
+def tuple_to_version(t: tuple[int, int, int]) -> str:
+    return ".".join(map(str, t))
+
+
+async def get_neoforge_url(
+    client: httpx.AsyncClient, normalized: tuple[int, int, int]
+) -> str | None:
+    major, minor, patch = normalized
 
     resp = await client.get(
         "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml"
     )
     resp.raise_for_status()
-    root = ET.fromstring(resp.text)
+    root = ElementTree.fromstring(resp.text)
 
     versions = [v.text for v in root.findall(".//version")]
-    # NeoForge versioning: MC 1.21.1 -> NeoForge 21.1.X
     matching = [v for v in versions if v.startswith(f"{minor}.{patch}.")]
 
     if not matching:
@@ -34,14 +39,12 @@ async def get_neoforge_url(client: httpx.AsyncClient, mc_version: str) -> str | 
     def normalize(v: str) -> str:
         return v.split("-")[0]
 
-    # Try to find stable version first
     stable = [v for v in matching if "-beta" not in v]
     if stable:
         latest = sorted(stable, key=lambda x: list(map(int, normalize(x).split("."))))[
             -1
         ]
     else:
-        # If no stable version, use beta
         latest = sorted(
             matching, key=lambda x: list(map(int, normalize(x).split(".")))
         )[-1]
@@ -54,12 +57,14 @@ async def get_neoforge_url(client: httpx.AsyncClient, mc_version: str) -> str | 
     )
 
 
-async def get_fabric_url(client: httpx.AsyncClient, mc_version: str) -> str | None:
+async def get_fabric_url(
+    client: httpx.AsyncClient, normalized: tuple[int, int, int]
+) -> str | None:
     resp = await client.get(
         "https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml"
     )
     resp.raise_for_status()
-    root = ET.fromstring(resp.text)
+    root = ElementTree.fromstring(resp.text)
 
     latest = root.findtext(".//latest")
     if not latest:
@@ -71,8 +76,12 @@ async def get_fabric_url(client: httpx.AsyncClient, mc_version: str) -> str | No
     )
 
 
-async def get_forge_url(client: httpx.AsyncClient, mc_version: str) -> str | None:
+async def get_forge_url(
+    client: httpx.AsyncClient, normalized: tuple[int, int, int]
+) -> str | None:
+    mc_version = tuple_to_version(normalized)
     page_url = f"https://files.minecraftforge.net/net/minecraftforge/forge/index_{mc_version}.html"
+
     resp = await client.get(page_url)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -101,12 +110,15 @@ async def get_installer_url(engine: str, mc_version: str) -> str | None:
     """
     Get the installer URL for a given Minecraft version and engine.
     """
+
     if not re.match(r"^\d+\.\d+(\.\d+)?$", mc_version):
         raise ValueError(f"Invalid Minecraft version format: {mc_version}")
+
+    normalized = normalize_mc_version(mc_version)
 
     engine = engine.lower()
     if engine not in ENGINES:
         raise ValueError(f"Unknown engine: {engine}")
 
     async with httpx.AsyncClient() as client:
-        return await ENGINES[engine](client, mc_version)
+        return await ENGINES[engine](client, normalized)
