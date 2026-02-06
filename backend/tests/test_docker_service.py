@@ -4,6 +4,10 @@ import docker
 import pytest
 from src.services.docker_service import DockerService
 
+# ---------------------------
+# FIXTURES
+# ---------------------------
+
 
 @pytest.fixture
 def docker_service():
@@ -12,7 +16,7 @@ def docker_service():
 
 
 # ---------------------------
-# start_server()
+# DockerService: start_server()
 # ---------------------------
 
 
@@ -30,9 +34,7 @@ async def test_start_server_creates_new_container(
     mock_from_env.return_value = mock_client
 
     mock_client.containers.get.side_effect = docker.errors.NotFound("not found")
-
     mock_client.images.build.return_value = ("image", [])
-
     mock_client.volumes.get.side_effect = docker.errors.NotFound("not found")
     mock_client.volumes.create.return_value = MagicMock()
 
@@ -93,7 +95,7 @@ async def test_start_server_existing_stopped_container(mock_from_env, docker_ser
 
 
 # ---------------------------
-# stop_server()
+# DockerService: stop_server()
 # ---------------------------
 
 
@@ -127,7 +129,7 @@ async def test_stop_server_error(mock_from_env, docker_service):
 
 
 # ---------------------------
-# restart_server()
+# DockerService: restart_server()
 # ---------------------------
 
 

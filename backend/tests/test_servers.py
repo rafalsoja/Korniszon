@@ -54,6 +54,38 @@ def test_create_server(client, loader, port):
     assert data["port"] == port
 
 
+def test_create_server_already_exists(client):
+    payload = {
+        "name": "TestServer_forge",
+        "mc_version": "1.20.1",
+        "loader": "forge",
+        "port": 25565,
+        "status": "stopped",
+        "description": "vanilla",
+        "xmx": 2048,
+        "xms": 1024,
+        "eula": True,
+    }
+    response = client.post("/v1/servers", json=payload)
+    assert response.status_code == 400
+
+
+def test_create_server_port_in_use(client):
+    payload = {
+        "name": "TestServer_forgee",
+        "mc_version": "1.20.1",
+        "loader": "forge",
+        "port": 25565,
+        "status": "stopped",
+        "description": "vanilla",
+        "xmx": 2048,
+        "xms": 1024,
+        "eula": True,
+    }
+    response = client.post("/v1/servers", json=payload)
+    assert response.status_code == 400
+
+
 def test_create_server_validation_error(client):
     payload = {
         "name": "InvalidServer",
