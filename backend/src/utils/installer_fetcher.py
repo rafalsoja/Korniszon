@@ -1,9 +1,12 @@
+import logging
 import re
 import urllib.parse
 import xml.etree.ElementTree as ElementTree
 
 import httpx
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger(__name__)
 
 
 def normalize_mc_version(mc_version: str) -> tuple[int, int, int]:
@@ -27,8 +30,14 @@ async def get_neoforge_url(
     resp = await client.get(
         "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml"
     )
-    resp.raise_for_status()
-    root = ElementTree.fromstring(resp.text)
+    try:
+        resp.raise_for_status()
+        root = ElementTree.fromstring(resp.text)
+    except (httpx.HTTPError, ElementTree.ParseError):
+        logger.error(
+            "Failed to fetch or parse NeoForge metadata for version {normalized}."
+        )
+        return None
 
     versions = [v.text for v in root.findall(".//version")]
     matching = [v for v in versions if v.startswith(f"{minor}.{patch}.")]
@@ -99,10 +108,38 @@ async def get_forge_url(
     return qs.get("url", [None])[0]
 
 
+async def get_vanilla_url(
+    client: httpx.AsyncClient, normalized: tuple[int, int, int]
+) -> str | None:
+    mc_version = tuple_to_version(normalized)
+
+    manifest_url = "https://piston-meta.mojang.com/mc/game/version_manifest.json"
+    resp = await client.get(manifest_url)
+    resp.raise_for_status()
+    manifest = resp.json()
+
+    entry = next((v for v in manifest["versions"] if v["id"] == mc_version), None)
+    if not entry:
+        logger.warning(f"Vanilla version {mc_version} not found in Mojang manifest.")
+        return None
+
+    version_manifest_url = entry["url"]
+    resp = await client.get(version_manifest_url)
+    resp.raise_for_status()
+    version_manifest = resp.json()
+
+    try:
+        return version_manifest["downloads"]["server"]["url"]
+    except KeyError:
+        logger.error(f"No server.jar found for vanilla version {mc_version}.")
+        return None
+
+
 ENGINES = {
     "neoforge": get_neoforge_url,
     "fabric": get_fabric_url,
     "forge": get_forge_url,
+    "vanilla": get_vanilla_url,
 }
 
 

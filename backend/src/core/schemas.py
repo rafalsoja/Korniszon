@@ -18,6 +18,7 @@ class LoaderType(str, Enum):
     FABRIC = "fabric"
     FORGE = "forge"
     NEOFORGE = "neoforge"
+    VANILLA = "vanilla"
 
 
 class ServerCreate(BaseModel):

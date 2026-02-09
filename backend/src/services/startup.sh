@@ -119,12 +119,14 @@ elif [ "$LOADER" = "neoforge" ]; then
         exit 1
     fi
 
-else
+elif [ "$LOADER" = "vanilla" ]; then
     # Default behavior for vanilla - download and run server.jar
     echo "Setting up Vanilla server"
+    rm -f /server/server.jar
     
     if [ ! -f /server/server.jar ]; then
         echo "Downloading server.jar from: $SERVER_JAR"
+        echo $SERVER_JAR
         curl -L -o /server/server.jar "$SERVER_JAR"
         if [ ! -f /server/server.jar ]; then
             echo "ERROR: Failed to download server.jar"
